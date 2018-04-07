@@ -10,8 +10,9 @@ typealias IndexedTile = DoublyIndexedItem<Tile>
 
 abstract class Game(val height: Int,val width : Int, val amountOfMines : Int)
 {
-    private val board : List<List<IndexedTile>> = List(height,{i->List(width,{j-> IndexedTile(i,j,Tile()) }) })
-    var lost = false
+    protected val board : List<List<IndexedTile>> = List(height,{i->List(width,{j-> IndexedTile(i,j,Tile()) }) })
+    enum class EndState {WON,LOST,UNDECIDED}
+    var winState = EndState.UNDECIDED
     var isFirstMove = true
     enum class InputMode {REVEALING,FLAGGING}
     var currentInputMode = InputMode.REVEALING
@@ -85,7 +86,14 @@ abstract class Game(val height: Int,val width : Int, val amountOfMines : Int)
         }else if(dangerousTile.value.isEmpty()) {
             revealTileNeighbors(dangerousTile)
         }
+        if(winConditionDone()) win()
     }
+
+    private fun win() {
+        winState = EndState.WON
+    }
+
+    private fun winConditionDone(): Boolean = board.flatten().count { !it.value.isRevealed } == amountOfMines
 
     fun revealTileNeighbors(startingTile: IndexedTile)
     {
@@ -104,7 +112,7 @@ abstract class Game(val height: Int,val width : Int, val amountOfMines : Int)
 
 
     private fun lose() {
-        lost = true
+        winState = EndState.LOST
     }
 
     private fun plantMines(startingTile:IndexedTile) {
