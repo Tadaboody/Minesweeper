@@ -34,9 +34,12 @@ class GameTest {
         }
 
         override fun plantMines(startingTile: IndexedTile) {
-            gameString.lines().withIndex().forEach { (lineNum, line) ->
-                line.withIndex().forEach { (charNum, char) ->
-                    if (char == '1') board[lineNum][charNum].value.plantMine()
+            for((lineNum,line) in gameString.lines().withIndex())
+            {
+                for((charNum,char) in line.withIndex())
+                {
+                    if (char == '1')
+                        board[lineNum][charNum].value.plantMine()
                 }
             }
         }
