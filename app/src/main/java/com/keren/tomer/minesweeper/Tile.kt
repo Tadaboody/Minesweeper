@@ -3,6 +3,7 @@ package com.keren.tomer.minesweeper
 
 
 open class Tile {
+    var isMine = false
     fun plantMine() {
         isMine = true
     }
@@ -20,8 +21,7 @@ open class Tile {
     }
     fun isEmpty() = !isMine && numberOfMinedNeighbors == 0
 
-    var numberOfMinedNeighbors : Int = 0
+    var numberOfMinedNeighbors = 0
     var isFlagged = false
-    var isMine = false
     var isRevealed = false
 }

@@ -3,29 +3,33 @@ package com.keren.tomer.minesweeper.textGame
 import com.keren.tomer.minesweeper.Game
 
 
-
-class TextGame(height:Int,width:Int,amountOfMines:Int) : Game(height,width,amountOfMines)
-{
-    private fun render()
+open class TextGame(height: Int, width: Int, amountOfMines: Int) : Game(height, width, amountOfMines) {
+    fun render(hide: Boolean = true)
     {
         this.board.forEach{row ->
-            row.forEach {
-                tile ->
-                if (!tile.value.isRevealed)
+            row.forEach { iTile ->
+                val tile = iTile.value
+                if (hide && !tile.isRevealed)
                 {
-                    print("X")
+                    if (tile.isFlagged) {
+                        print("F")
+                    } else {
+                        print("X")
+                    }
                 }else
                 {
-                    if(tile.value.isMine)
+                    if (tile.isMine)
                     {
                         print("*")
+                    } else {
+                        print(tile.numberOfMinedNeighbors)
                     }
-                    print(tile.value.numberOfMinedNeighbors)
                 }
                 print(",")
             }
             println()
         }
+        println()
     }
     fun runGame()
     {

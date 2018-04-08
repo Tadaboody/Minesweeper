@@ -8,9 +8,8 @@ import java.util.*
 
 typealias IndexedTile = DoublyIndexedItem<Tile>
 
-abstract class Game(val height: Int,val width : Int, val amountOfMines : Int)
-{
-    protected val board : List<List<IndexedTile>> = List(height,{i->List(width,{j-> IndexedTile(i,j,Tile()) }) })
+abstract class Game(val height: Int, val width: Int, val amountOfMines: Int) {
+    val board: List<List<IndexedTile>> = List(height, { i -> List(width, { j -> IndexedTile(i, j, Tile()) }) })
     enum class EndState {WON,LOST,UNDECIDED}
     var winState = EndState.UNDECIDED
     var isFirstMove = true
@@ -21,7 +20,7 @@ abstract class Game(val height: Int,val width : Int, val amountOfMines : Int)
         return true //TODO:Implemnt
     }
 
-    private fun initGame(startingTile:IndexedTile) {
+    open fun initGame(startingTile: IndexedTile) {
         do {
             cleanMines()
             plantMines(startingTile)
@@ -57,13 +56,11 @@ abstract class Game(val height: Int,val width : Int, val amountOfMines : Int)
                 InputMode.REVEALING -> revealTile(currentTile)
                 InputMode.FLAGGING -> flagTile(currentTile)
             }
-        }else
-        {
-            if(currentTile.value.isEmpty() || currentTile.isSafe())
+        } else if (currentTile.isSafe())
             {
                 revealTileNeighbors(currentTile)
             }
-        }
+
     }
 
     private fun IndexedTile.isSafe() : Boolean {
@@ -79,35 +76,43 @@ abstract class Game(val height: Int,val width : Int, val amountOfMines : Int)
 
     private fun revealTile(dangerousTile : IndexedTile)
     {
-        if(!dangerousTile.value.isRevealed) {
-            if (dangerousTile.value.isFlagged) return
+        if (!dangerousTile.value.isRevealed && !dangerousTile.value.isFlagged) {
             if (dangerousTile.value.isMine) lose()
             dangerousTile.value.reveal()
-        }else if(dangerousTile.value.isEmpty()) {
+        }
+        if (dangerousTile.value.isEmpty()) {
             revealTileNeighbors(dangerousTile)
         }
-        if(winConditionDone()) win()
+        checkForWin()
+    }
+
+    private fun checkForWin() {
+        if (winConditionDone())
+            win()
     }
 
     private fun win() {
         winState = EndState.WON
     }
 
-    private fun winConditionDone(): Boolean = board.flatten().count { !it.value.isRevealed } == amountOfMines
+    private fun winConditionDone(): Boolean = board.flatten().count { !it.value.isRevealed } == amountOfMines && winState != EndState.LOST
 
     fun revealTileNeighbors(startingTile: IndexedTile)
     {
+        val revealable = { it: IndexedTile -> !it.value.isRevealed && !it.value.isFlagged }
         val tileQueue : Queue<IndexedTile> = LinkedList()
-        tileQueue.add(startingTile)
+        tileQueue.addAll(startingTile.neighbors(board).filter(revealable))
         while(tileQueue.isNotEmpty())
         {
             val currentTile = tileQueue.poll()
-            currentTile.value.reveal()
+            if (!currentTile.value.isFlagged)
+                currentTile.value.reveal()
             if(currentTile.value.isEmpty()) // spread
             {
-                tileQueue.addAll(currentTile.neighbors(board).toSet().filter { it.value.isRevealed })
+                tileQueue.addAll(currentTile.neighbors(board).toSet().filter(revealable))
             }
         }
+        checkForWin()
     }
 
 
@@ -115,11 +120,21 @@ abstract class Game(val height: Int,val width : Int, val amountOfMines : Int)
         winState = EndState.LOST
     }
 
-    private fun plantMines(startingTile:IndexedTile) {
+    open fun plantMines(startingTile: IndexedTile) {
         val possibleMines = board.flatten().toSet() - (startingTile.neighbors(board) + startingTile)
         possibleMines.choose(amountOfMines).forEach { tile -> tile.value.plantMine() }
+        countMines()
     }
-    private fun cleanMines() = board.flatten().filter { it.value.isMine }.forEach{tile -> tile.value.removeMine() }
+
+    protected fun countMines() {
+        for (tile in board.flatten()) {
+            tile.value.numberOfMinedNeighbors = tile.neighbors(board).count { it.value.isMine }
+        }
+    }
+
+    protected fun cleanMines() {
+        board.flatten().filter { it.value.isMine }.forEach { tile -> tile.value.removeMine() }
+    }
 }
 
 
