@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Minesweeper</string>
     <string name="appName">MineSweeper</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="easy">Easy</string>
 </resources>
