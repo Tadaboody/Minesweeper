@@ -4,22 +4,19 @@ import com.keren.tomer.minesweeper.Game
 
 
 open class TextGame(height: Int, width: Int, amountOfMines: Int) : Game(height, width, amountOfMines) {
-    fun render(hide: Boolean = true)
-    {
-        this.board.forEach{row ->
+    fun render(hide: Boolean = true) {
+        this.board.forEachIndexed { row_i, row ->
+            print("$row_i:")
             row.forEach { iTile ->
                 val tile = iTile.value
-                if (hide && !tile.isRevealed)
-                {
+                if (hide && !tile.isRevealed) {
                     if (tile.isFlagged) {
                         print("F")
                     } else {
-                        print("X")
+                        print("?")
                     }
-                }else
-                {
-                    if (tile.isMine)
-                    {
+                } else {
+                    if (tile.isMine) {
                         print("*")
                     } else {
                         print(tile.numberOfMinedNeighbors)
@@ -31,15 +28,18 @@ open class TextGame(height: Int, width: Int, amountOfMines: Int) : Game(height, 
         }
         println()
     }
-    fun runGame()
-    {
-        while(winState == EndState.UNDECIDED)
-        {
-            clickTile(readLine()!!.toInt(), readLine()!!.toInt())
+
+    fun runGame() {
+        render()
+        while (winState == EndState.UNDECIDED) {
+            print("Enter row:")
+            val row = readLine()!!.toInt()
+            print("Enter col:")
+            val col = readLine()!!.toInt()
+            clickTile(row, col)
             render()
         }
-        when(winState)
-        {
+        when (winState) {
             EndState.WON -> println("conglaturations!")
             EndState.LOST -> println("OhNo")
             else -> {
@@ -49,6 +49,6 @@ open class TextGame(height: Int, width: Int, amountOfMines: Int) : Game(height, 
 }
 
 fun main(args: Array<String>) {
-    val a = TextGame(8,8,1)
+    val a = TextGame(8, 8, 1)
     a.runGame()
 }
