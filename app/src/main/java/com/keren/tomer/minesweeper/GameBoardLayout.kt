@@ -23,20 +23,14 @@ fun GridLayout.createView(game: Game, item: DoublyIndexedItem<Tile>): View {
         setImageResource(R.drawable.hidden_tile)
         setOnClickListener {
             game.clickTile(item.i, item.j)
-            val image = item.value.run {
-                when (isRevealed) {
-                    true -> when (isMine) {
-                        true -> R.drawable.mine_tile
-                        false -> R.mipmap.ic_launcher //TODO: dynamically change the image according to number
-                    }
-                    false -> when (isFlagged) {
-                        true -> R.drawable.flag_tile
-                        false -> R.drawable.hidden_tile
-                    }
+            val image = when (item.value.state) {
+                    Tile.State.HIDDEN -> R.drawable.hidden_tile
+                    Tile.State.FLAGGED -> R.drawable.flag_tile
+                    Tile.State.MINE -> R.drawable.mine_tile
+                    Tile.State.NUMBERED -> R.mipmap.ic_launcher
                 }
-            }
             setImageResource(image)
-            Toast.makeText(context, "Clicked $item.i,$item.j", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, item.value.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 }
