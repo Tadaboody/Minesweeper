@@ -23,11 +23,10 @@
         app:verticalPanEnabled="true"
         app:zoomEnabled="true">
 
-        <Button
-            android:id="@+id/toasty_button"
+        <GridLayout
+            android:id="@+id/game_board"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="wow lad!"
             android:textColor="@android:color/black"
             android:textSize="36sp"
             android:textStyle="bold"
