@@ -14,15 +14,21 @@ import kotlinx.android.synthetic.main.activity_game.*
 
 class GameActivity : AppCompatActivity() {
 
+    companion object {
+        const val INTENT_WIDTH = "WIDTH"
+        const val INTENT_HEIGHT = "HEIGHT"
+        const val INTENT_MINES = "MINES"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 //        toasty_button.setOnClickListener { Toast.makeText(this, "Hello!", Toast.LENGTH_LONG).show() }
         //        gameGrid.adapter = GameAdapter(this)
-        val width = intent.getIntExtra("WIDTH", 15)
-        val height = intent.getIntExtra("HEIGHT", 15)
-        val mines = intent.getIntExtra("MINES", 15)
-        val game = Game(height,width, mines)
+        val width = intent.getIntExtra(INTENT_WIDTH, 15)
+        val height = intent.getIntExtra(INTENT_HEIGHT, 15)
+        val mines = intent.getIntExtra(INTENT_MINES, 15)
+        val game = Game(height, width, mines)
         game_board.addGame(game)
 //        game = Game(width = width,height=height,amountOfMines = mines)
 

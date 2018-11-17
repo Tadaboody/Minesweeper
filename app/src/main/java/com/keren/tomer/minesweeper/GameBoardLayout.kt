@@ -9,8 +9,8 @@ import android.widget.Toast
 import utils.DoublyIndexedItem
 
 fun GridLayout.addGame(game: Game) {
-    rowCount = game.width
-    columnCount = game.height
+    rowCount = game.height
+    columnCount = game.width
     game.board.flatten().forEach { item ->
         val params = GridLayout.LayoutParams(spec(item.i), spec(item.j))
         addView(createView(game, item), params)
