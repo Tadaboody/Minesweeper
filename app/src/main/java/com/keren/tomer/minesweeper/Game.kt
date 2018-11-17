@@ -5,6 +5,8 @@ import utils.choose
 import utils.next
 
 import java.util.*
+import kotlin.properties.Delegates
+import kotlin.properties.ObservableProperty
 
 typealias IndexedTile = DoublyIndexedItem<Tile>
 
@@ -15,13 +17,16 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
 
     enum class EndState { WON, LOST, UNDECIDED }
 
-    var winState = EndState.UNDECIDED
+    var endCallback: ((EndState) -> Unit)? = null
+    var winState by Delegates.observable(EndState.UNDECIDED) { _, _, newValue ->
+        endCallback?.invoke(newValue)
+    }
     protected var isFirstMove = true
 
     enum class InputMode { REVEALING, FLAGGING }
 
     private fun isWinnable(): Boolean {
-        return true //TODO:Implemnt
+        return true //TODO: Make a MineSweeper game that needs no guessing
     }
 
     protected fun initGame(startingTile: IndexedTile) {
