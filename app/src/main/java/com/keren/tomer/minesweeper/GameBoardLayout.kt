@@ -28,7 +28,6 @@ fun GridLayout.createView(game: Game, item: DoublyIndexedItem<Tile>): View {
         setOnClickListener {
             game.clickTile(item.i, item.j)
             updateBoard(game)
-            Toast.makeText(context, item.value.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 }
