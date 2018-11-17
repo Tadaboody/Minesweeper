@@ -1,7 +1,5 @@
 package com.keren.tomer.minesweeper
 
-import android.content.Context
-import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
@@ -43,10 +41,25 @@ fun GridLayout.updateBoard(game: Game) {
             Tile.State.HIDDEN -> R.drawable.hidden_tile
             Tile.State.FLAGGED -> R.drawable.flag_tile
             Tile.State.MINE -> R.drawable.mine_tile
-            Tile.State.NUMBERED -> R.mipmap.ic_launcher
+            Tile.State.NUMBERED -> numberedTile(item.value.numberOfMinedNeighbors)
         }
         view as ImageView
         view.setImageResource(image)
+    }
+}
+
+fun numberedTile(number: Int): Int = when (number) {
+    0 -> R.drawable.ic_minesweeper_0
+    1 -> R.drawable.ic_minesweeper_1
+    2 -> R.drawable.ic_minesweeper_2
+    3 -> R.drawable.ic_minesweeper_3
+    4 -> R.drawable.ic_minesweeper_4
+    5 -> R.drawable.ic_minesweeper_5
+    6 -> R.drawable.ic_minesweeper_6
+    7 -> R.drawable.ic_minesweeper_7
+    8 -> R.drawable.ic_minesweeper_8
+    else -> {
+        R.mipmap.ic_launcher
     }
 }
 
