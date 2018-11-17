@@ -40,7 +40,7 @@ fun GridLayout.updateBoard(game: Game) {
         val image = when (item.value.state) {
             Tile.State.HIDDEN -> R.drawable.hidden_tile
             Tile.State.FLAGGED -> R.drawable.flag_tile
-            Tile.State.MINE -> R.drawable.mine_tile
+            Tile.State.MINE -> R.drawable.ic_mine
             Tile.State.NUMBERED -> numberedTile(item.value.numberOfMinedNeighbors)
         }
         view as ImageView
