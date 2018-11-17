@@ -8,7 +8,9 @@ import java.util.*
 
 typealias IndexedTile = DoublyIndexedItem<Tile>
 
-open class Game(val height: Int, val width: Int, val amountOfMines: Int, private val winnableGame: Boolean = false) {
+open class Game(val height: Int, val width: Int, val amountOfMines: Int,
+                private val winnableGame: Boolean = false,
+                private var currentInputMode: Game.InputMode = InputMode.FLAGGING) {
     val board: List<List<IndexedTile>> = List(height) { i -> List(width) { j -> IndexedTile(i, j, Tile()) } }
 
     enum class EndState { WON, LOST, UNDECIDED }
@@ -17,8 +19,6 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int, private
     protected var isFirstMove = true
 
     enum class InputMode { REVEALING, FLAGGING }
-
-    private var currentInputMode = InputMode.REVEALING
 
     private fun isWinnable(): Boolean {
         return true //TODO:Implemnt
@@ -49,6 +49,7 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int, private
     fun clickTile(i: Int, j: Int) {
         val currentTile = board[i][j]
         if (isFirstMove) {
+            isFirstMove = false
             initGame(currentTile)
             revealTile(currentTile)
         } else if (!currentTile.value.isRevealed) {
@@ -96,7 +97,7 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int, private
 
     private fun winConditionDone(): Boolean = board.flatten().count { !it.value.isRevealed } == amountOfMines && winState != EndState.LOST
 
-    fun revealTileNeighbors(startingTile: IndexedTile) {
+    private fun revealTileNeighbors(startingTile: IndexedTile) {
         val revealable = { it: IndexedTile -> !it.value.isRevealed && !it.value.isFlagged }
         val tileQueue: Queue<IndexedTile> = LinkedList()
         tileQueue.addAll(startingTile.neighbors(board).filter(revealable))
