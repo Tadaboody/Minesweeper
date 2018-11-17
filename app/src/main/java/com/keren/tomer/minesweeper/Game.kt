@@ -108,8 +108,10 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
         tileQueue.addAll(startingTile.neighbors(board).filter(revealable))
         while (tileQueue.isNotEmpty()) {
             val currentTile = tileQueue.poll()
-            if (!currentTile.value.isFlagged)
+            if (!currentTile.value.isFlagged) {
                 currentTile.value.reveal()
+                if (currentTile.value.isMine) lose()
+            }
             if (currentTile.value.isEmpty()) // spread
             {
                 tileQueue.addAll(currentTile.neighbors(board).toSet().filter(revealable))
