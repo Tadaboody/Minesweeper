@@ -1,10 +1,8 @@
 package com.keren.tomer.minesweeper
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_main.*
 

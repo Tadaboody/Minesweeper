@@ -3,10 +3,8 @@ package com.keren.tomer.minesweeper
 import utils.DoublyIndexedItem
 import utils.choose
 import utils.next
-
 import java.util.*
 import kotlin.properties.Delegates
-import kotlin.properties.ObservableProperty
 
 typealias IndexedTile = DoublyIndexedItem<Tile>
 
@@ -75,15 +73,29 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
 
     private var minesLeft = amountOfMines
     private fun flagTile(hiddenTile: IndexedTile) {
-        if (!hiddenTile.value.isRevealed) hiddenTile.value.toggleFlag()
+        if (!hiddenTile.value.isRevealed) hiddenTile.toggleFlag()
         if (hiddenTile.value.isFlagged) minesLeft-- else minesLeft++ //flag added
 
+    }
+
+    fun IndexedTile.reveal() {
+        value.reveal()
+        checkForWin()
+    }
+
+    private fun IndexedTile.toggleFlag() {
+        value.toggleFlag()
+        checkForWin()
+    }
+
+    fun revealBoard() {
+        board.flatten().filter { !it.value.isRevealed }.forEach { revealTile(it) }
     }
 
     private fun revealTile(dangerousTile: IndexedTile) {
         if (!dangerousTile.value.isRevealed && !dangerousTile.value.isFlagged) {
             if (dangerousTile.value.isMine) lose()
-            dangerousTile.value.reveal()
+            dangerousTile.reveal()
         }
         if (dangerousTile.value.isEmpty()) {
             revealTileNeighbors(dangerousTile)
@@ -100,7 +112,10 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
         winState = EndState.WON
     }
 
-    private fun winConditionDone(): Boolean = board.flatten().count { !it.value.isRevealed } == amountOfMines && winState != EndState.LOST
+    private fun winConditionDone(): Boolean {
+        return ((board.flatten().count { !it.value.isRevealed } == amountOfMines) or board.flatten().filter { it.value.isMine }.all { it.value.isFlagged })
+                && (winState != EndState.LOST)
+    }
 
     private fun revealTileNeighbors(startingTile: IndexedTile) {
         val revealable = { it: IndexedTile -> !it.value.isRevealed && !it.value.isFlagged }
@@ -109,7 +124,7 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
         while (tileQueue.isNotEmpty()) {
             val currentTile = tileQueue.poll()
             if (!currentTile.value.isFlagged) {
-                currentTile.value.reveal()
+                currentTile.reveal()
                 if (currentTile.value.isMine) lose()
             }
             if (currentTile.value.isEmpty()) // spread

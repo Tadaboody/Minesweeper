@@ -3,7 +3,7 @@ package com.keren.tomer.minesweeper.textGame
 import com.keren.tomer.minesweeper.Game
 
 
-open class TextGame(height: Int, width: Int, amountOfMines: Int) : Game(height, width, amountOfMines) {
+open class TextGame(height: Int, width: Int, amountOfMines: Int) : Game(height, width, amountOfMines,currentInputMode = InputMode.REVEALING) {
     fun render(hide: Boolean = true) {
         this.board.forEachIndexed { row_i, row ->
             print("$row_i:")

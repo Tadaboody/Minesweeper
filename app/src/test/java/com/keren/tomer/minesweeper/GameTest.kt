@@ -59,16 +59,16 @@ class GameTest {
     }
 
     @Test
-    fun win() {
+    fun winByFlagging() {
         game.holdTile(1, 4)
         game.holdTile(2, 3)
         game.holdTile(3, 0)
-        game.render()
-        for (i in 0 until game.height) {
-            for (j in 0 until game.width) {
-                game.clickTile(i, j)
-            }
-        }
+        assertEquals(Game.EndState.WON, game.winState)
+    }
+
+    @Test
+    fun winByRevealing() {
+        game.board.flatten().filter { !it.value.isMine }.forEach { game.run { it.reveal() } }
         assertEquals(Game.EndState.WON, game.winState)
     }
 

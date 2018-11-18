@@ -1,16 +1,8 @@
 package com.keren.tomer.minesweeper
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
-import com.keren.tomer.minesweeper.R.id.game_board
 import kotlinx.android.synthetic.main.activity_game.*
 
 class GameActivity : AppCompatActivity() {
@@ -34,7 +26,7 @@ class GameActivity : AppCompatActivity() {
         game.endCallback = {
             game_zoom.engine.zoomTo(1.0F, true)
             when (it) {//TODO
-                Game.EndState.WON -> ""
+                Game.EndState.WON -> game.revealBoard()
                 Game.EndState.LOST -> ""
                 Game.EndState.UNDECIDED -> Log.e(TAG, "INVALID_STATE")
             }
