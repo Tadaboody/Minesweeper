@@ -5,9 +5,12 @@ import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.GridLayout.spec
 import android.widget.ImageView
-import android.widget.Toast
 import utils.DoublyIndexedItem
 
+/**
+ * Adds a Minesweeper game to an existing GridLayout for rendering
+ * @param game The minesweeper instance to be added
+ */
 fun GridLayout.addGame(game: Game) {
     rowCount = game.height
     columnCount = game.width
@@ -17,6 +20,12 @@ fun GridLayout.addGame(game: Game) {
     }
 }
 
+/**
+ * Creates a View to represent a game tile
+ * @param game The game the tile belongs to
+ * @param item The IndexedTile that the View represent
+ * @return A View representing item
+ */
 fun GridLayout.createView(game: Game, item: DoublyIndexedItem<Tile>): View {
     return ImageView(context).apply {
         setImageResource(R.drawable.hidden_tile)
@@ -32,8 +41,16 @@ fun GridLayout.createView(game: Game, item: DoublyIndexedItem<Tile>): View {
     }
 }
 
+/**
+ * Returns all of a ViewGroup's children
+ */
 fun ViewGroup.children(): List<View> = (0 until childCount).map { getChildAt(it) }
 
+/**
+ * Update every view of the GridLayout according to the gamestate
+ * @receiver The gridlayout being updated
+ * @param game The game supplying the state
+ */
 fun GridLayout.updateBoard(game: Game) {
     game.board.flatten().zip(children()).forEach { (item, view) ->
         val image = when (item.value.state) {
@@ -47,6 +64,10 @@ fun GridLayout.updateBoard(game: Game) {
     }
 }
 
+/**
+ * @param number The number the tile should represent
+ * @return The resource for the image representing the tile
+ */
 fun numberedTile(number: Int): Int = when (number) {
     0 -> R.drawable.ic_minesweeper_0
     1 -> R.drawable.ic_minesweeper_1
