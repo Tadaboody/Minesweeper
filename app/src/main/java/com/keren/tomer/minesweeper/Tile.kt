@@ -44,6 +44,8 @@ open class Tile {
             }
         }
 
+    fun isFalslyFlagged() = isFlagged and isMine
+
     override fun toString(): String {
         return when (state) {
             State.MINE -> "MINE"

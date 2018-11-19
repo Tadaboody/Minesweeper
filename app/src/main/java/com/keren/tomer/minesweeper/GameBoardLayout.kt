@@ -11,32 +11,32 @@ import utils.DoublyIndexedItem
  * Adds a Minesweeper game to an existing GridLayout for rendering
  * @param game The minesweeper instance to be added
  */
-fun GridLayout.addGame(game: Game) {
-    rowCount = game.height
-    columnCount = game.width
-    game.board.flatten().forEach { item ->
+fun GridLayout.addGame(viewModel: GameViewModel) {
+    rowCount = viewModel.height
+    columnCount = viewModel.width
+    viewModel.board.forEach { item ->
         val params = GridLayout.LayoutParams(spec(item.i), spec(item.j))
-        addView(createView(game, item), params)
+        addView(createView(viewModel, item), params)
     }
 }
 
 /**
- * Creates a View to represent a game tile
- * @param game The game the tile belongs to
+ * Creates a View to represent a viewModel tile
+ * @param viewModel The viewModel the tile belongs to
  * @param item The IndexedTile that the View represent
  * @return A View representing item
  */
-fun GridLayout.createView(game: Game, item: DoublyIndexedItem<Tile>): View {
+fun GridLayout.createView(viewModel: GameViewModel, item: DoublyIndexedItem<Tile>): View {
     return ImageView(context).apply {
         setImageResource(R.drawable.hidden_tile)
         setOnLongClickListener {
-            game.holdTile(item.i, item.j)
-            updateBoard(game)
+            viewModel.holdTile(item.i, item.j)
+            updateBoard(viewModel.game)
             true
         }
         setOnClickListener {
-            game.clickTile(item.i, item.j)
-            updateBoard(game)
+            viewModel.clickTile(item.i, item.j)
+            updateBoard(viewModel.game)
         }
     }
 }
