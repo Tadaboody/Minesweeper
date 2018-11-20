@@ -5,13 +5,13 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 
 class GameViewModel(height: Int, width: Int, amountOfMines: Int) : ViewModel() {
-    val game: Game = Game(height, width, amountOfMines).apply { endCallback = { winnState.value = it } }
+    val game: Game = UnMutatingGame(height, width, amountOfMines).apply { endCallback = { winnState.value = it } }
     val height = game.height
     val width = game.width
     val board = game.board.flatten()
     val winnState: MutableLiveData<Game.EndState> = MutableLiveData()
     val flagsLeft: MutableLiveData<Int> = MutableLiveData()
-    val tiles: List<MutableLiveData<IndexedTile>> = board.map { MutableLiveData<IndexedTile>().apply { value = it } }
+    val tiles: List<MutableLiveData<Tile.State>> = board.map { MutableLiveData<Tile.State>().apply { value = it.value.state } }
     val gameState = MutableLiveData<Game.EndState>()
     private fun flagsLeft_() = game.amountOfMines - board.count { it.value.isFlagged }
     fun holdTile(i: Int, j: Int) {

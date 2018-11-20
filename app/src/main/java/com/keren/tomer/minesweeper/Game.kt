@@ -11,7 +11,7 @@ typealias IndexedTile = DoublyIndexedItem<Tile>
 open class Game(val height: Int, val width: Int, val amountOfMines: Int,
                 private val winnableGame: Boolean = false,
                 private var currentInputMode: Game.InputMode = InputMode.FLAGGING) {
-    val board: List<List<IndexedTile>> = List(height) { i -> List(width) { j -> IndexedTile(i, j, Tile()) } }
+    open val board: List<List<IndexedTile>> = List(height) { i -> List(width) { j -> IndexedTile(i, j, Tile()) } }
 
     enum class EndState { WON, LOST, UNDECIDED }
 
@@ -72,13 +72,13 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
     }
 
     private var minesLeft = amountOfMines
-    private fun flagTile(hiddenTile: IndexedTile) {
+    open fun flagTile(hiddenTile: IndexedTile) {
         if (!hiddenTile.value.isRevealed) hiddenTile.toggleFlag()
         if (hiddenTile.value.isFlagged) minesLeft-- else minesLeft++ //flag added
 
     }
 
-    fun IndexedTile.reveal() {
+    open fun IndexedTile.reveal() {
         value.reveal()
         checkForWin()
     }
@@ -92,7 +92,7 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
         board.flatten().filter { !it.value.isRevealed }.forEach { revealTile(it) }
     }
 
-    private fun revealTile(dangerousTile: IndexedTile) {
+    fun revealTile(dangerousTile: IndexedTile) {
         if (!dangerousTile.value.isRevealed && !dangerousTile.value.isFlagged) {
             if (dangerousTile.value.isMine) lose()
             dangerousTile.reveal()
@@ -140,9 +140,13 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
         winState = EndState.LOST
     }
 
+    open fun plantMine(tile: IndexedTile) {
+        tile.value.plantMine()
+    }
+
     open fun plantMines(startingTile: IndexedTile) {
         val possibleMines = board.flatten().toSet() - (startingTile.neighbors(board) + startingTile)
-        possibleMines.choose(amountOfMines).forEach { tile -> tile.value.plantMine() }
+        possibleMines.choose(amountOfMines).forEach(::plantMine)
         countMines()
     }
 
@@ -157,5 +161,25 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
     }
 }
 
+class UnMutatingGame(height: Int, width: Int, amountOfMines: Int,
+                     winnableGame: Boolean = false,
+                     currentInputMode: Game.InputMode = InputMode.FLAGGING) : Game(height, width, amountOfMines, winnableGame, currentInputMode) {
+    override val board: MutableList<MutableList<IndexedTile>> = MutableList(height) { i -> MutableList(width) { j -> IndexedTile(i, j, Tile()) } }
+    override fun flagTile(hiddenTile: IndexedTile) {
+        hiddenTile.replaceValue { toggleFlag() }
+    }
+
+    override fun plantMine(tile: IndexedTile) {
+        tile.replaceValue { plantMine() }
+    }
+
+    override fun IndexedTile.reveal() {
+        replaceValue { reveal() }
+    }
+
+    private fun IndexedTile.replaceValue(transformation: Tile.() -> Unit) {
+        board[i][j] = copy(value = value.apply(transformation))
+    }
+}
 
 

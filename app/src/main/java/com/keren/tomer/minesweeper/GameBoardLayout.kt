@@ -18,6 +18,7 @@ fun GridLayout.addGame(viewModel: GameViewModel) {
         val params = GridLayout.LayoutParams(spec(item.i), spec(item.j))
         addView(createView(viewModel, item), params)
     }
+    updateBoard(viewModel.game)
 }
 
 /**
@@ -28,7 +29,6 @@ fun GridLayout.addGame(viewModel: GameViewModel) {
  */
 fun GridLayout.createView(viewModel: GameViewModel, item: DoublyIndexedItem<Tile>): View {
     return ImageView(context).apply {
-        setImageResource(R.drawable.hidden_tile)
         setOnLongClickListener {
             viewModel.holdTile(item.i, item.j)
             updateBoard(viewModel.game)
