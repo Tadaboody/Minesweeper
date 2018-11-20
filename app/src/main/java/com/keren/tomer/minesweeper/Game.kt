@@ -83,7 +83,7 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
         checkForWin()
     }
 
-    private fun IndexedTile.toggleFlag() {
+    protected open fun IndexedTile.toggleFlag() {
         value.toggleFlag()
         checkForWin()
     }
@@ -103,7 +103,7 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
         checkForWin()
     }
 
-    private fun checkForWin() {
+    protected fun checkForWin() {
         if (winConditionDone())
             win()
     }
@@ -167,6 +167,7 @@ class UnMutatingGame(height: Int, width: Int, amountOfMines: Int,
     override val board: MutableList<MutableList<IndexedTile>> = MutableList(height) { i -> MutableList(width) { j -> IndexedTile(i, j, Tile()) } }
     override fun flagTile(hiddenTile: IndexedTile) {
         hiddenTile.replaceValue { toggleFlag() }
+        checkForWin() // Can't call super of extension functions (yet?)
     }
 
     override fun plantMine(tile: IndexedTile) {
@@ -175,6 +176,7 @@ class UnMutatingGame(height: Int, width: Int, amountOfMines: Int,
 
     override fun IndexedTile.reveal() {
         replaceValue { reveal() }
+        checkForWin()
     }
 
     private fun IndexedTile.replaceValue(transformation: Tile.() -> Unit) {
