@@ -59,7 +59,7 @@ class GameEndDialog : DialogFragment() {
                     board?.screenshot?.share(it)
                 }
                 setNegativeButton("Change Difficulty") { dialog, which ->
-                    //TODO: Go back to the home activity
+                    it.finish()
                 }
             }.create()
         } ?: throw IllegalStateException("Activity cannot be null")
