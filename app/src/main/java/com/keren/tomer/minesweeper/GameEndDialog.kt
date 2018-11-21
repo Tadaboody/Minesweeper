@@ -49,6 +49,12 @@ class GameEndDialog : DialogFragment() {
             Game.EndState.LOST -> "You lost :("
             Game.EndState.UNDECIDED -> "You... huh"
         }
+        val share_text = when (result) {//TODO: Add time data to share text
+            Game.EndState.WON -> "Look at this Minesweeper game I won!"
+            Game.EndState.LOST -> "Almost won this board! So unfair!"
+            Game.EndState.UNDECIDED -> TODO()
+            null -> TODO()
+        }
         return activity?.let { activity: FragmentActivity ->
             AlertDialog.Builder(activity).apply {
                 setMessage(title)
@@ -57,7 +63,7 @@ class GameEndDialog : DialogFragment() {
                 }
                 setNeutralButton("Share result") { _, _ ->
                     val board = activity.findViewById<GridLayout>(R.id.game_board)
-                    board?.screenshot?.share(activity)
+                    board?.screenshot?.share(activity, share_text)
                 }
                 setNegativeButton("Change Difficulty") { dialog, which ->
                     activity.finish()
@@ -119,7 +125,7 @@ val View.screenshot: Bitmap
 /**
  * based off of https://stackoverflow.com/questions/17160593/how-to-attach-a-bitmap-when-launching-action-send-intent
  */
-fun Bitmap.share(context: Activity) {
+fun Bitmap.share(context: Activity, text: String = "") {
     val permissionBuilder = context.permissionsBuilder(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE).build()
     permissionBuilder.onAccepted {
         val dir = File("${Environment.getExternalStorageDirectory().absolutePath}${File.separator}minesweeper").apply {
@@ -135,6 +141,7 @@ fun Bitmap.share(context: Activity) {
             action = Intent.ACTION_SEND
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_STREAM, Uri.parse(temp_file.path)) // workaround to creating a FileProvider https://stackoverflow.com/a/52925917/4342751
+            putExtra(Intent.EXTRA_TEXT, text)
             type = "image/jpeg"
         }
         context.startActivity(Intent.createChooser(shareIntent, context.resources.getText(R.string.send_to)))
