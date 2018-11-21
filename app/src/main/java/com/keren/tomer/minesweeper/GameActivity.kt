@@ -4,6 +4,7 @@ import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_game.*
 
@@ -19,6 +20,12 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        supportActionBar?.run {
+            //www.journaldev.com/9952/android-custom-action-bar-example-tutorial
+            displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+            setDisplayShowCustomEnabled(true)
+            setCustomView(R.layout.game_action_bar)
+        }
 //        toasty_button.setOnClickListener { Toast.makeText(this, "Hello!", Toast.LENGTH_LONG).show() }
         //        gameGrid.adapter = GameAdapter(this)
         val width = intent.getIntExtra(INTENT_WIDTH, 15)
