@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.util.Log
 import android.view.View
 import android.widget.GridLayout
@@ -48,18 +49,18 @@ class GameEndDialog : DialogFragment() {
             Game.EndState.LOST -> "You lost :("
             Game.EndState.UNDECIDED -> "You... huh"
         }
-        return activity?.let {
-            AlertDialog.Builder(it).apply {
+        return activity?.let { activity: FragmentActivity ->
+            AlertDialog.Builder(activity).apply {
                 setMessage(title)
                 setPositiveButton("Play again") { dialog, which ->
-                    it.restart()
+                    activity.restart()
                 }
                 setNeutralButton("Share result") { _, _ ->
-                    val board = it.findViewById<GridLayout>(R.id.game_board)
-                    board?.screenshot?.share(it)
+                    val board = activity.findViewById<GridLayout>(R.id.game_board)
+                    board?.screenshot?.share(activity)
                 }
                 setNegativeButton("Change Difficulty") { dialog, which ->
-                    it.finish()
+                    activity.finish()
                 }
             }.create()
         } ?: throw IllegalStateException("Activity cannot be null")
