@@ -52,7 +52,7 @@ class GameEndDialog : DialogFragment() {
             AlertDialog.Builder(it).apply {
                 setMessage(title)
                 setPositiveButton("Play again") { dialog, which ->
-                    //TODO: Re-create the activity
+                    it.restart()
                 }
                 setNeutralButton("Share result") { _, _ ->
                     val board = it.findViewById<GridLayout>(R.id.game_board)
