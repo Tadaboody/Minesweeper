@@ -1,10 +1,10 @@
 package com.keren.tomer.minesweeper
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import kotlinx.android.synthetic.main.activity_game.*
 
 class GameActivity : AppCompatActivity() {
@@ -27,15 +27,15 @@ class GameActivity : AppCompatActivity() {
         val model = ViewModelProviders.of(this, GameViewModelFactory(width, height, mines)).get(GameViewModel::class.java)
         model.winnState.observe(this, Observer {
             game_zoom.engine.zoomTo(1.0F, true)
-            when (it) {//TODO
-                Game.EndState.WON -> Log.i(TAG,"GAME WON!")
-                Game.EndState.LOST -> Log.i(TAG,"GAME LOST")
-                Game.EndState.UNDECIDED -> Log.e(TAG, "INVALID_STATE")
-            }
+            GameEndDialog.newInstance(it!!).show(supportFragmentManager,"game end dialog")
         })
         game_board.addGame(model)
 //        game = Game(width = width,height=height,amountOfMines = mines)
 
     }
+}
+fun Activity.restart(){
+    startActivity(intent)
+    finish()
 }
 
