@@ -68,7 +68,7 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
 
     private fun IndexedTile.isSafe(): Boolean {
         val expectedFlags = value.numberOfMinedNeighbors
-        return neighbors(board).count { it.value.isFlagged } == expectedFlags
+        return neighbors(board).count { it.value.isFlagged } >= expectedFlags
     }
 
     private var minesLeft = amountOfMines
