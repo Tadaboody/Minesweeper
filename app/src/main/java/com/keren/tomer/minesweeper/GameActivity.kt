@@ -41,14 +41,19 @@ class GameActivity : AppCompatActivity() {
         displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         setDisplayShowCustomEnabled(true)
         setCustomView(R.layout.game_action_bar)
-        model.inputMode.observe(this@GameActivity, Observer {
-            if (it != null)
-                inputModeButton.setImageResource(when (it) {
-                    Game.InputMode.REVEALING -> R.drawable.ic_mine
-                    Game.InputMode.FLAGGING -> R.drawable.flag_tile
-                })
+        model.inputMode.observe(this@GameActivity, NonNullObserver {
+            inputModeButton.setImageResource(when (it) {
+                Game.InputMode.REVEALING -> R.mipmap.ic_launcher
+                Game.InputMode.FLAGGING -> R.drawable.flag_tile
+                else -> {
+                    R.mipmap.ic_launcher
+                }
+            })
         })
         inputModeButton.setOnClickListener { model.toggleInputMode() }
+        model.flagsLeft.observe(this@GameActivity, NonNullObserver {
+            flagsRemainingText.text = it.toString()
+        })
     }
 }
 
@@ -57,3 +62,8 @@ fun Activity.restart() {
     finish()
 }
 
+class NonNullObserver<T : Any>(val onChangedNotNull: (T) -> Unit) : Observer<T> {
+    override fun onChanged(t: T?) {
+        if (t != null) onChangedNotNull(t)
+    }
+}
