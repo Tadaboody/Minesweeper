@@ -54,6 +54,9 @@ class GameActivity : AppCompatActivity() {
         model.flagsLeft.observe(this@GameActivity, NonNullObserver {
             flagsRemainingText.text = it.toString()
         })
+        faceImage.setOnClickListener {
+            restart()
+        }
     }
 }
 
