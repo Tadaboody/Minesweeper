@@ -125,5 +125,13 @@ class GameTest {
         assertEquals(true, flagged.all { !it.value.isRevealed })
         assertEquals(true, notFlagged.all { it.value.isRevealed })
     }
+    @Test
+    fun correctAmountOfMines() {
+        val expectedAmount = 10
+        val game = Game(10, 10, expectedAmount)
+        game.clickTile(0, 0)
+        val actualAmount = game.board.flatten().count { it.value.isMine }
+        assertEquals(expectedAmount, actualAmount)
+    }
 
 }
