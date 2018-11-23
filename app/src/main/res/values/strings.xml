@@ -8,4 +8,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="send_to">Share results with...</string>
+    <string name="inputmethod">inputMethod</string>
+    <string name="restartgame">RestartGame</string>
+    <string name="placeHolderFlagCount">100</string>
+    <string name="PlaceHolderTimeElapsed">MM:SS</string>
 </resources>

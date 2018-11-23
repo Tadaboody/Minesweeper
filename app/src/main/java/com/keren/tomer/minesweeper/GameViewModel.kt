@@ -13,6 +13,11 @@ class GameViewModel(height: Int, width: Int, amountOfMines: Int) : ViewModel() {
     val flagsLeft: MutableLiveData<Int> = MutableLiveData()
     val tiles: List<MutableLiveData<Tile.State>> = board.map { MutableLiveData<Tile.State>().apply { value = it.value.state } }
     val gameState = MutableLiveData<Game.EndState>()
+    val inputMode: MutableLiveData<Game.InputMode> = MutableLiveData()
+
+    init {
+        updateData()
+    }
     private fun flagsLeft_() = game.amountOfMines - board.count { it.value.isFlagged }
     fun holdTile(i: Int, j: Int) {
         game.holdTile(i, j)
@@ -22,10 +27,16 @@ class GameViewModel(height: Int, width: Int, amountOfMines: Int) : ViewModel() {
     private fun updateData() {
         flagsLeft.value = flagsLeft_()
         gameState.value = game.winState
+        inputMode.value = game.currentInputMode
     }
 
     fun clickTile(i: Int, j: Int) {
         game.clickTile(i, j)
+        updateData()
+    }
+
+    fun toggleInputMode() {
+        game.swapMode()
         updateData()
     }
 

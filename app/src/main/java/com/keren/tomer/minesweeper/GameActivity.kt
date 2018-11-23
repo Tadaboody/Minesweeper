@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.game_action_bar.*
 
 class GameActivity : AppCompatActivity() {
 
@@ -20,12 +21,6 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
-        supportActionBar?.run {
-            //www.journaldev.com/9952/android-custom-action-bar-example-tutorial
-            displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-            setDisplayShowCustomEnabled(true)
-            setCustomView(R.layout.game_action_bar)
-        }
 //        toasty_button.setOnClickListener { Toast.makeText(this, "Hello!", Toast.LENGTH_LONG).show() }
         //        gameGrid.adapter = GameAdapter(this)
         val width = intent.getIntExtra(INTENT_WIDTH, 15)
@@ -34,14 +29,30 @@ class GameActivity : AppCompatActivity() {
         val model = ViewModelProviders.of(this, GameViewModelFactory(width, height, mines)).get(GameViewModel::class.java)
         model.winnState.observe(this, Observer {
             game_zoom.engine.zoomTo(1.0F, true)
-            GameEndDialog.newInstance(it!!).show(supportFragmentManager,"game end dialog")
+            GameEndDialog.newInstance(it!!).show(supportFragmentManager, "game end dialog")
         })
         game_board.addGame(model)
+        supportActionBar?.setup(model)
 //        game = Game(width = width,height=height,amountOfMines = mines)
 
     }
+
+    private fun ActionBar.setup(model: GameViewModel) {
+        displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+        setDisplayShowCustomEnabled(true)
+        setCustomView(R.layout.game_action_bar)
+        model.inputMode.observe(this@GameActivity, Observer {
+            if (it != null)
+                inputModeButton.setImageResource(when (it) {
+                    Game.InputMode.REVEALING -> R.drawable.ic_mine
+                    Game.InputMode.FLAGGING -> R.drawable.flag_tile
+                })
+        })
+        inputModeButton.setOnClickListener { model.toggleInputMode() }
+    }
 }
-fun Activity.restart(){
+
+fun Activity.restart() {
     startActivity(intent)
     finish()
 }

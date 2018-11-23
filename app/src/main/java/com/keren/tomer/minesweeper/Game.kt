@@ -10,7 +10,7 @@ typealias IndexedTile = DoublyIndexedItem<Tile>
 
 open class Game(val height: Int, val width: Int, val amountOfMines: Int,
                 private val winnableGame: Boolean = false,
-                private var currentInputMode: Game.InputMode = InputMode.FLAGGING) {
+                var currentInputMode: Game.InputMode = InputMode.FLAGGING) {
     open val board: List<List<IndexedTile>> = List(height) { i -> List(width) { j -> IndexedTile(i, j, Tile()) } }
 
     enum class EndState { WON, LOST, UNDECIDED }
