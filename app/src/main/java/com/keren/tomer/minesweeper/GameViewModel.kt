@@ -5,14 +5,14 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 
 class GameViewModel(height: Int, width: Int, amountOfMines: Int) : ViewModel() {
-    val game: Game = UnMutatingGame(height, width, amountOfMines).apply { endCallback = { winnState.value = it } }
+    val game: Game = UnMutatingGame(height, width, amountOfMines).apply { endCallback = { this@GameViewModel.winState.value = it } }
     val height = game.height
     val width = game.width
     val board = game.board.flatten()
-    val winnState: MutableLiveData<Game.EndState> = MutableLiveData()
+    val winState: MutableLiveData<Game.State> = MutableLiveData()
     val flagsLeft: MutableLiveData<Int> = MutableLiveData()
     val tiles: List<MutableLiveData<Tile.State>> = board.map { MutableLiveData<Tile.State>().apply { value = it.value.state } }
-    val gameState = MutableLiveData<Game.EndState>()
+    val gameState = MutableLiveData<Game.State>()
     val inputMode: MutableLiveData<Game.InputMode> = MutableLiveData()
 
     init {

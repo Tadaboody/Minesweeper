@@ -28,9 +28,6 @@
             android:id="@+id/game_board"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textColor="@android:color/black"
-            android:textSize="36sp"
-            android:textStyle="bold"
             android:typeface="monospace" />
 
     </com.otaliastudios.zoom.ZoomLayout>

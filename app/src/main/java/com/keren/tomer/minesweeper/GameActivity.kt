@@ -27,14 +27,21 @@ class GameActivity : AppCompatActivity() {
         val height = intent.getIntExtra(INTENT_HEIGHT, 15)
         val mines = intent.getIntExtra(INTENT_MINES, 15)
         val model = ViewModelProviders.of(this, GameViewModelFactory(width, height, mines)).get(GameViewModel::class.java)
-        model.winnState.observe(this, Observer {
-            game_zoom.engine.zoomTo(1.0F, true)
-            GameEndDialog.newInstance(it!!).show(supportFragmentManager, "game end dialog")
-        })
         game_board.addGame(model)
         supportActionBar?.setup(model)
-//        game = Game(width = width,height=height,amountOfMines = mines)
-
+        model.winState.observe(this, Observer {
+            when (it!!) {
+                Game.State.WON, Game.State.LOST -> {
+                    game_zoom.engine.zoomTo(1.0F, true)
+                    GameEndDialog.newInstance(it).show(supportFragmentManager, "game end dialog")
+                }
+                Game.State.ONGOING -> {
+                    start()
+                }
+                Game.State.STARTING -> {
+                }
+            }
+        })
     }
 
     private fun ActionBar.setup(model: GameViewModel) {
@@ -57,6 +64,10 @@ class GameActivity : AppCompatActivity() {
         faceImage.setOnClickListener {
             restart()
         }
+    }
+
+    private fun start() {
+        gameClock.start()
     }
 }
 

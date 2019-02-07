@@ -62,13 +62,13 @@ class GameTest {
         game.holdTile(1, 4)
         game.holdTile(2, 3)
         game.holdTile(3, 0)
-        assertEquals(Game.EndState.WON, game.winState)
+        assertEquals(Game.State.WON, game.winState)
     }
 
     @Test
     fun winByRevealing() {
         game.board.flatten().filter { !it.value.isMine }.forEach { game.run { it.reveal() } }
-        assertEquals(Game.EndState.WON, game.winState)
+        assertEquals(Game.State.WON, game.winState)
     }
 
     @Test
@@ -94,10 +94,10 @@ class GameTest {
         val j = 4
         game.holdTile(i, j)
         game.clickTile(i, j)//Flag and click
-        assertEquals(Game.EndState.UNDECIDED, game.winState)
+        assertEquals(Game.State.UNDECIDED, game.winState)
         game.holdTile(i, j)//Unflag
         game.clickTile(i, j)
-        assertEquals(Game.EndState.LOST, game.winState)
+        assertEquals(Game.State.LOST, game.winState)
     }
 
     @Test
