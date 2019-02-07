@@ -10,13 +10,13 @@ typealias IndexedTile = DoublyIndexedItem<Tile>
 
 open class Game(val height: Int, val width: Int, val amountOfMines: Int,
                 private val winnableGame: Boolean = false,
-                private var currentInputMode: Game.InputMode = InputMode.FLAGGING) {
+                var currentInputMode: Game.InputMode = InputMode.FLAGGING) {
     open val board: List<List<IndexedTile>> = List(height) { i -> List(width) { j -> IndexedTile(i, j, Tile()) } }
 
-    enum class EndState { WON, LOST, UNDECIDED }
+    enum class State { WON, LOST, ONGOING, STARTING }
 
-    var endCallback: ((EndState) -> Unit)? = null
-    var winState by Delegates.observable(EndState.UNDECIDED) { _, _, newValue ->
+    var endCallback: ((State) -> Unit)? = null
+    var winState by Delegates.observable(State.STARTING) { _, _, newValue ->
         endCallback?.invoke(newValue)
     }
     protected var isFirstMove = true
@@ -33,6 +33,7 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
             plantMines(startingTile)
             updateNumbers()
         } while (winnableGame and !isWinnable())
+        winState = State.ONGOING
     }
 
     private fun updateNumbers() {
@@ -109,12 +110,12 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
     }
 
     private fun win() {
-        winState = EndState.WON
+        winState = State.WON
     }
 
     private fun winConditionDone(): Boolean {
         return ((board.flatten().count { !it.value.isRevealed } == amountOfMines) or board.flatten().filter { it.value.isMine }.all { it.value.isFlagged })
-                && (winState != EndState.LOST)
+                && (winState != State.LOST)
     }
 
     private fun revealTileNeighbors(startingTile: IndexedTile) {
@@ -137,7 +138,7 @@ open class Game(val height: Int, val width: Int, val amountOfMines: Int,
 
 
     private fun lose() {
-        winState = EndState.LOST
+        winState = State.LOST
     }
 
     open fun plantMine(tile: IndexedTile) {

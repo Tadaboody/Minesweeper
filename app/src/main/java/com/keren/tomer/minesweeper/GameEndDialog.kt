@@ -33,27 +33,26 @@ private const val ARG_PARAM2 = "param2"
  *
  */
 class GameEndDialog : DialogFragment() {
-    private var result: Game.EndState? = null
+    private var result: Game.State? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            result = it.getEnum<Game.EndState>(RESULT)
+            result = it.getEnum<Game.State>(RESULT)
         }
         Log.i(TAG, "Created from $activity")
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val title = when (result!!) {
-            Game.EndState.WON -> "You won!"
-            Game.EndState.LOST -> "You lost :("
-            Game.EndState.UNDECIDED -> "You... huh"
+            Game.State.WON -> "You won!"
+            Game.State.LOST -> "You lost :("
+            Game.State.STARTING,Game.State.ONGOING -> "You... huh"
         }
-        val share_text = when (result) {//TODO: Add time data to share text
-            Game.EndState.WON -> "Look at this Minesweeper game I won!"
-            Game.EndState.LOST -> "Almost won this board! So unfair!"
-            Game.EndState.UNDECIDED -> TODO()
-            null -> TODO()
+        val share_text = when (result!!) {//TODO: Add time data to share text
+            Game.State.WON -> "Look at this Minesweeper game I won!"
+            Game.State.LOST -> "Almost won this board! So unfair!"
+            Game.State.ONGOING,Game.State.STARTING  -> TODO()
         }
         return activity?.let { activity: FragmentActivity ->
             AlertDialog.Builder(activity).apply {
@@ -86,7 +85,7 @@ class GameEndDialog : DialogFragment() {
         private val RESULT = "result"
 
         @JvmStatic
-        fun newInstance(result: Game.EndState) =
+        fun newInstance(result: Game.State) =
                 GameEndDialog().apply {
                     arguments = Bundle().apply {
                         putEnum(RESULT, result)

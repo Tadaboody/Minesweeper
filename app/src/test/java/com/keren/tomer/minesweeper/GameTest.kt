@@ -62,13 +62,13 @@ class GameTest {
         game.holdTile(1, 4)
         game.holdTile(2, 3)
         game.holdTile(3, 0)
-        assertEquals(Game.EndState.WON, game.winState)
+        assertEquals(Game.State.WON, game.winState)
     }
 
     @Test
     fun winByRevealing() {
         game.board.flatten().filter { !it.value.isMine }.forEach { game.run { it.reveal() } }
-        assertEquals(Game.EndState.WON, game.winState)
+        assertEquals(Game.State.WON, game.winState)
     }
 
     @Test
@@ -94,10 +94,10 @@ class GameTest {
         val j = 4
         game.holdTile(i, j)
         game.clickTile(i, j)//Flag and click
-        assertEquals(Game.EndState.UNDECIDED, game.winState)
+        assertEquals(Game.State.UNDECIDED, game.winState)
         game.holdTile(i, j)//Unflag
         game.clickTile(i, j)
-        assertEquals(Game.EndState.LOST, game.winState)
+        assertEquals(Game.State.LOST, game.winState)
     }
 
     @Test
@@ -124,6 +124,14 @@ class GameTest {
         val (flagged, notFlagged) = importantNeighbors.partition { it.value.isFlagged } // enough neighbors are flagged, all neighbors should be revealed
         assertEquals(true, flagged.all { !it.value.isRevealed })
         assertEquals(true, notFlagged.all { it.value.isRevealed })
+    }
+    @Test
+    fun correctAmountOfMines() {
+        val expectedAmount = 10
+        val game = Game(10, 10, expectedAmount)
+        game.clickTile(0, 0)
+        val actualAmount = game.board.flatten().count { it.value.isMine }
+        assertEquals(expectedAmount, actualAmount)
     }
 
 }

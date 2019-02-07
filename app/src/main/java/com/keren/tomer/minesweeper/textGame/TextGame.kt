@@ -31,7 +31,7 @@ open class TextGame(height: Int, width: Int, amountOfMines: Int) : Game(height, 
 
     fun runGame() {
         render()
-        while (winState == EndState.UNDECIDED) {
+        while (winState == State.ONGOING || winState==State.STARTING) {
             print("Enter row:")
             val row = readLine()!!.toInt()
             print("Enter col:")
@@ -40,8 +40,8 @@ open class TextGame(height: Int, width: Int, amountOfMines: Int) : Game(height, 
             render()
         }
         when (winState) {
-            EndState.WON -> println("conglaturations!")
-            EndState.LOST -> println("OhNo")
+            State.WON -> println("conglaturations!")
+            State.LOST -> println("OhNo")
             else -> {
             }
         }

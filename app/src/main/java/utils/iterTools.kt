@@ -6,7 +6,7 @@ fun <T,K,C: Iterable<T>> C.cartesianProduct(other : Iterable<K>) : Set<Pair<T,K>
 }
 
 fun <E> Collection<E>.choose(amount: Int): Collection<E> {
-    return this.shuffled().slice(0..amount)
+    return this.shuffled().slice(0 until amount)
 }
 
 inline fun <reified T: Enum<T>> T.next(): T {
