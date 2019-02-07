@@ -26,7 +26,7 @@ class GameActivity : AppCompatActivity() {
         val width = intent.getIntExtra(INTENT_WIDTH, 15)
         val height = intent.getIntExtra(INTENT_HEIGHT, 15)
         val mines = intent.getIntExtra(INTENT_MINES, 15)
-        val model = ViewModelProviders.of(this, GameViewModelFactory(width, height, mines)).get(GameViewModel::class.java)
+        val model = ViewModelProviders.of(this, GameViewModelFactory(height = height, width = width, amountOfMines = mines)).get(GameViewModel::class.java)
         game_board.addGame(model)
         supportActionBar?.setup(model)
         model.winState.observe(this, Observer {

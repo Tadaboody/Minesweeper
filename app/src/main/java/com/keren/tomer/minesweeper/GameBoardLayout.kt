@@ -9,7 +9,7 @@ import utils.DoublyIndexedItem
 
 /**
  * Adds a Minesweeper game to an existing GridLayout for rendering
- * @param game The minesweeper instance to be added
+ * @param viewModel The viewModel containing the game
  */
 fun GridLayout.addGame(viewModel: GameViewModel) {
     rowCount = viewModel.height
